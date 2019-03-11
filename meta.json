@@ -10,7 +10,7 @@
   },
   "author": "Eversion",
   "url": "https://github.com/eversion/PS4-Kernel-Dumper",
-  "redirect": true,
+  "redirect": false,
   "reload": false,
   "offline": true
 }
