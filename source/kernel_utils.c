@@ -256,7 +256,7 @@ int kpayload_jailbreak(struct thread *td, struct kpayload_jailbreak_args *args) 
     kernel_ptr = (uint8_t *)kernel_base;
     got_prison0 = (void **)&kernel_ptr[K620_PRISON_0];
     got_rootvnode = (void **)&kernel_ptr[K620_ROOTVNODE];
-  } else if (fw_version == 0x670) {
+  } else if (fw_version == 0x650) {
     // 6.50 and 6.51
     kernel_base = &((uint8_t *)__readmsr(0xC0000082))[-K650_XFAST_SYSCALL];
     kernel_ptr = (uint8_t *)kernel_base;
