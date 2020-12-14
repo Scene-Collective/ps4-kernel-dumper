@@ -410,12 +410,9 @@ int kpayload_kernel_dumper(struct thread *td, struct kpayload_kernel_dumper_args
     kernel_base = &((uint8_t *)__readmsr(0xC0000082))[-K450_XFAST_SYSCALL];
     copyout = (void *)(kernel_base + K450_COPYOUT);
   } else if (fw_version == 0x470) {
-    kernel_base = &((uint8_t *)__readmsr(0xC0000082))[-K_XFAST_SYSCALL];
-    copyout = (void *)(kernel_base + K_COPYOUT);
-  } else if (fw_version == 0x470) {
     kernel_base = &((uint8_t *)__readmsr(0xC0000082))[-K470_XFAST_SYSCALL];
     copyout = (void *)(kernel_base + K470_COPYOUT);
-  } else if (fw_version == 0x471 || fw_version == 0x472 || fw_version == 0x473 || fw_version == 0x474)
+  } else if (fw_version == 0x471 || fw_version == 0x472 || fw_version == 0x473 || fw_version == 0x474) {
     kernel_base = &((uint8_t *)__readmsr(0xC0000082))[-K471_XFAST_SYSCALL];
     copyout = (void *)(kernel_base + K471_COPYOUT);
   } else if (fw_version == 0x500 || fw_version == 0x501) {
