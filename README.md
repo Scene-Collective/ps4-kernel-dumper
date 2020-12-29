@@ -1,6 +1,6 @@
 Kernel Dumper
 ===
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/c6589b4e1df44466a416c7aedefa0cf6)](https://www.codacy.com/gh/Scene-Collective/ps4-kernel-dumper/dashboard)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/)](https://www.codacy.com/gh/Scene-Collective/ps4-kernel-dumper/dashboard)
 
 ## Synopsis
 Dumps your device's kernel from memory to a USB device.
