@@ -1,15 +1,15 @@
 {
   "title": "Kernel Dumper",
   "version": "1.0.0",
-  "updated": "2001-01-01T00:00:00Z",
+  "updated": "2021-01-01T00:00:00Z",
   "device": "PlayStation 4",
   "firmware": "",
   "description": {
-    "default": "Dumps your PS4's kernel to USB.",
-    "en": "Dumps your PS4's kernel to USB."
+    "default": "Dumps your device's kernel from memory to a USB device",
+    "en": "Dumps your device's kernel from memory to a USB device"
   },
   "author": "Eversion",
-  "url": "https://github.com/eversion/PS4-Kernel-Dumper",
+  "url": "https://github.com/Scene-Collective/ps4-kernel-dumper",
   "redirect": false,
   "reload": false,
   "offline": true

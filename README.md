@@ -1,15 +1,19 @@
 Kernel Dumper
-=============
+===
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/c6589b4e1df44466a416c7aedefa0cf6)](https://www.codacy.com/gh/Scene-Collective/ps4-kernel-dumper/dashboard)
 
-# Credits
-### Exploits
-  - qwertyoruiopz
-  - Flatz
-  - CTurt
-  - Anonymous
+## Synopsis
+Dumps your device's kernel from memory to a USB device.
 
-### Multi FW Payload Method
-  - CelesteBlue123
+For the payloads built with the most recent firmware supported visit [this repo].
 
-### Original Payload
-  - [eversion](https://github.com/eversion/PS4-Kernel-Dumper)
+## Notes
+- Contribute translations for the decription in `meta.json`
+- Requires being built with the [Scene Collective Payload SDK]
+- Supports any firmware that the SDK supports
+- Originally created by [eversion]
+
+[//]: #
+  [Scene Collective Payload SDK]: <https://github.com/Scene-Collective/ps4-payload-sdk>
+  [this repo]: <https://github.com/Scene-Collective/ps4-payload-repo>
+  [eversion]: <https://github.com/eversion/PS4-Kernel-Dumper>
