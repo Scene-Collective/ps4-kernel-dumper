@@ -1,9 +1,9 @@
 #include "ps4.h"
 
-#define KERNEL_CHUNK_SIZE   0x1000
+#define KERNEL_CHUNK_SIZE 0x1000
 #define KERNEL_CHUNK_NUMBER 0x69B8
 
-int _main(struct thread* td) {
+int _main(struct thread *td) {
   UNUSED(td);
   initKernel();
   initLibc();
@@ -31,12 +31,12 @@ int _main(struct thread* td) {
   printf_notification("USB device detected.\n\nStarting kernel dumping to USB%i.", row / 10);
   int percent = 0;
 
-  uint64_t* dump = mmap(NULL, 0x1000, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
+  uint64_t *dump = mmap(NULL, 0x1000, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
   uint64_t pos = 0;
   for (uint64_t i = 0; i < KERNEL_CHUNK_NUMBER; i++) {
     get_memory_dump(kernel_base + pos, dump, KERNEL_CHUNK_SIZE);
     lseek(sf, pos, SEEK_SET);
-    write(sf, (void*)dump, KERNEL_CHUNK_SIZE);
+    write(sf, (void *)dump, KERNEL_CHUNK_SIZE);
     if (i >= (percent + 10) * KERNEL_CHUNK_NUMBER / 100) {
       percent += 10;
       printf_notification("Kernel dumping to USB%i\nDone: %i%%", row / 10, percent);
