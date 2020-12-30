@@ -5,14 +5,16 @@
 
 int _main(struct thread *td) {
   UNUSED(td);
+
   initKernel();
   initLibc();
 
   jailbreak();
-  uint64_t kernel_base = get_kernel_base();
-  uint16_t fw_version = get_firmware();
 
   initSysUtil();
+
+  uint64_t kernel_base = get_kernel_base();
+  uint16_t fw_version = get_firmware();
 
   printf_notification("Running PS4 Kernel Dumper");
 
