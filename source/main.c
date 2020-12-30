@@ -70,12 +70,11 @@ int _main(struct thread *td) {
 
   uint64_t *dump = mmap(NULL, 0x4000, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
   uint64_t pos = 0;
-  int percent = 0;
   for (int i = 0; i < KERNEL_CHUNK_NUMBER; i++) {
     get_memory_dump(kernel_base + pos, dump, KERNEL_CHUNK_SIZE);
     lseek(fd, pos, SEEK_SET);
     write(fd, (void *)dump, KERNEL_CHUNK_SIZE);
-    percent = ((double)(KERNEL_CHUNK_SIZE * i) / ((double)KERNEL_CHUNK_SIZE * (double)KERNEL_CHUNK_NUMBER)) * 100;
+    int percent = ((double)(KERNEL_CHUNK_SIZE * i) / ((double)KERNEL_CHUNK_SIZE * (double)KERNEL_CHUNK_NUMBER)) * 100;
     sprintf(notify_buf, "Kernel dumping to %s\nDone: %i%%", usb_name, percent);
     pos = pos + KERNEL_CHUNK_SIZE;
   }
