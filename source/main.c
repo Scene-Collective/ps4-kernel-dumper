@@ -29,8 +29,11 @@ void *nthread_func(void *arg) {
 int _main(struct thread *td) {
   UNUSED(td);
 
+  char fw_version[6] = {0};
   char usb_name[64] = {0};
   char usb_path[64] = {0};
+  char directory_base[255] = {0};
+  char output_root[255] = {0};
   char saveFile[64] = {0};
 
   initKernel();
@@ -41,13 +44,13 @@ int _main(struct thread *td) {
 
   initSysUtil();
 
+  get_firmware_string(fw_version);
+  uint64_t kernel_base = get_kernel_base();
+
   nthread_run = 1;
   notify_buf[0] = '\0';
   ScePthread nthread;
   scePthreadCreate(&nthread, NULL, nthread_func, NULL, "nthread");
-
-  uint64_t kernel_base = get_kernel_base();
-  uint16_t fw_version = get_firmware();
 
   printf_notification("Running Kernel Dumper");
 
@@ -59,7 +62,12 @@ int _main(struct thread *td) {
     notify_buf[0] = '\0';
   }
 
-  sprintf(saveFile, "%s/kernel_dump_%i.bin", usb_path, fw_version);
+  sprintf(directory_base, "%s/PS4", usb_path);
+  mkdir(directory_base, 0777);
+  sprintf(output_root, "%s/%s", directory_base, fw_version);
+  mkdir(output_root, 0777);
+
+  sprintf(saveFile, "%s/PS4/%s/kernel.bin", usb_path, fw_version);
   int fd = open(saveFile, O_WRONLY | O_CREAT | O_TRUNC, 0777);
   if (fd < 0) {
     printf_notification("Unabled to create kernel dump! Quitting...");
