@@ -49,7 +49,7 @@ int _main(struct thread *td) {
   uint64_t kernel_base = get_kernel_base();
   uint16_t fw_version = get_firmware();
 
-  printf_notification("Running PS4 Kernel Dumper");
+  printf_notification("Running Kernel Dumper");
 
   if (!wait_for_usb(usb_name, usb_path)) {
     sprintf(notify_buf, "Waiting for USB device...");
