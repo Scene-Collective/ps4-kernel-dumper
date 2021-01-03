@@ -47,6 +47,7 @@ int _main(struct thread *td) {
   uint64_t kernel_base = get_kernel_base();
 
   ScePthread nthread;
+  memset_s(&nthread, sizeof(ScePthread), 0, sizeof(ScePthread));
   scePthreadCreate(&nthread, NULL, nthread_func, NULL, "nthread");
 
   printf_notification("Running Kernel Dumper");
