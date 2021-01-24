@@ -1,3 +1,7 @@
+//#define DEBUG_SOCKET
+#define DEBUG_IP "192.168.2.2"
+#define DEBUG_PORT 9023
+
 #include "ps4.h"
 
 #define KERNEL_CHUNK_SIZE PAGE_SIZE
@@ -15,7 +19,7 @@ void *nthread_func(void *arg) {
       time_t t2 = time(NULL);
       if ((t2 - t1) >= notify_time) {
         t1 = t2;
-        systemMessage(notify_buf);
+        printf_notification("%s", notify_buf);
       }
     } else {
       t1 = 0;
@@ -38,6 +42,11 @@ int _main(struct thread *td) {
   initKernel();
   initLibc();
   initPthread();
+
+#ifdef DEBUG_SOCKET
+  initNetwork();
+  DEBUG_SOCK = SckConnect(DEBUG_IP, DEBUG_PORT);
+#endif
 
   jailbreak();
 
@@ -103,6 +112,11 @@ int _main(struct thread *td) {
   touch_file(completion_check);
 
   printf_notification("Kernel dumped successfully!");
+
+#ifdef DEBUG_SOCKET
+  printf_socket("\nClosing socket...\n\n");
+  SckClose(DEBUG_SOCK);
+#endif
 
   return 0;
 }
