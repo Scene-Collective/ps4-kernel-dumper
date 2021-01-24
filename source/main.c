@@ -5,7 +5,6 @@
 #include "ps4.h"
 
 #define KERNEL_CHUNK_SIZE PAGE_SIZE
-#define KERNEL_CHUNK_NUMBER 0x1A42
 
 int nthread_run = 1;
 int notify_time = 20;
@@ -27,6 +26,31 @@ void *nthread_func(void *arg) {
     sceKernelSleep(1);
   }
   return NULL;
+}
+
+uint64_t get_kernel_size(uint64_t kernel_base) {
+  uint16_t elf_header_size;       // ELF header size
+  uint16_t elf_header_entry_size; // ELF header entry size
+  uint16_t num_of_elf_entries;    // Number of entries in the ELF header
+
+  get_memory_dump(kernel_base + 0x34, (uint64_t *)&elf_header_size, sizeof(uint16_t));
+  get_memory_dump(kernel_base + 0x34 + sizeof(uint16_t), (uint64_t *)&elf_header_entry_size, sizeof(uint16_t));
+  get_memory_dump(kernel_base + 0x34 + (sizeof(uint16_t) * 2), (uint64_t *)&num_of_elf_entries, sizeof(uint16_t));
+
+  printf_socket("elf_header_size: %u bytes\n", elf_header_size);
+  printf_socket("elf_header_entry_size: %u bytes\n", elf_header_entry_size);
+  printf_socket("num_of_elf_entries: %u\n", num_of_elf_entries);
+
+  uint64_t size = 0;
+  for (int i = 0; i < num_of_elf_entries; i++) {
+    uint64_t temp;
+    uint64_t offset = elf_header_size + (i * elf_header_entry_size) + 0x28;
+    get_memory_dump(kernel_base + offset, &temp, sizeof(uint64_t));
+    printf_socket("Segment #%i (Offset: 0x%X): %u bytes\n", i, offset, temp);
+    size += temp;
+  }
+
+  return size;
 }
 
 int _main(struct thread *td) {
@@ -92,14 +116,20 @@ int _main(struct thread *td) {
 
   printf_notification("USB device detected.\n\nStarting kernel dumping to %s.", usb_name);
 
+  uint64_t kernel_size = get_kernel_size(kernel_base);
+  uint64_t num_of_kernel_chunks = (kernel_size + (KERNEL_CHUNK_SIZE / 2)) / KERNEL_CHUNK_SIZE;
+
+  printf_socket("Kernel Size: %lu bytes\n", kernel_size);
+  printf_socket("Kernel Chunks: %lu\n", num_of_kernel_chunks);
+
   notify_time = 5;
   uint64_t *dump = mmap(NULL, 0x4000, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
   uint64_t pos = 0;
-  for (int i = 0; i < KERNEL_CHUNK_NUMBER; i++) {
+  for (uint64_t i = 0; i < num_of_kernel_chunks; i++) {
     get_memory_dump(kernel_base + pos, dump, KERNEL_CHUNK_SIZE);
     lseek(fd, pos, SEEK_SET);
     write(fd, (void *)dump, KERNEL_CHUNK_SIZE);
-    int percent = ((double)(KERNEL_CHUNK_SIZE * i) / ((double)KERNEL_CHUNK_SIZE * (double)KERNEL_CHUNK_NUMBER)) * 100;
+    int percent = ((double)(KERNEL_CHUNK_SIZE * i) / ((double)KERNEL_CHUNK_SIZE * (double)num_of_kernel_chunks)) * 100;
     snprintf_s(notify_buf, sizeof(notify_buf), "Kernel dumping to %s\nDone: %i%%", usb_name, percent);
     pos = pos + KERNEL_CHUNK_SIZE;
   }
