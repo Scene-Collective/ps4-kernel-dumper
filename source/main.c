@@ -37,16 +37,16 @@ uint64_t get_kernel_size(uint64_t kernel_base) {
   get_memory_dump(kernel_base + 0x34 + sizeof(uint16_t), (uint64_t *)&elf_header_entry_size, sizeof(uint16_t));
   get_memory_dump(kernel_base + 0x34 + (sizeof(uint16_t) * 2), (uint64_t *)&num_of_elf_entries, sizeof(uint16_t));
 
-  printf_socket("elf_header_size: %u bytes\n", elf_header_size);
-  printf_socket("elf_header_entry_size: %u bytes\n", elf_header_entry_size);
-  printf_socket("num_of_elf_entries: %u\n", num_of_elf_entries);
+  printf_debug("elf_header_size: %u bytes\n", elf_header_size);
+  printf_debug("elf_header_entry_size: %u bytes\n", elf_header_entry_size);
+  printf_debug("num_of_elf_entries: %u\n", num_of_elf_entries);
 
   uint64_t size = 0;
   for (int i = 0; i < num_of_elf_entries; i++) {
     uint64_t temp;
     uint64_t offset = elf_header_size + (i * elf_header_entry_size) + 0x28;
     get_memory_dump(kernel_base + offset, &temp, sizeof(uint64_t));
-    printf_socket("Segment #%i (Offset: 0x%X): %u bytes\n", i, offset, temp);
+    printf_debug("Segment #%i (Offset: 0x%X): %u bytes\n", i, offset, temp);
     size += temp;
   }
 
@@ -119,8 +119,8 @@ int _main(struct thread *td) {
   uint64_t kernel_size = get_kernel_size(kernel_base);
   uint64_t num_of_kernel_chunks = (kernel_size + (KERNEL_CHUNK_SIZE / 2)) / KERNEL_CHUNK_SIZE;
 
-  printf_socket("Kernel Size: %lu bytes\n", kernel_size);
-  printf_socket("Kernel Chunks: %lu\n", num_of_kernel_chunks);
+  printf_debug("Kernel Size: %lu bytes\n", kernel_size);
+  printf_debug("Kernel Chunks: %lu\n", num_of_kernel_chunks);
 
   notify_time = 5;
   uint64_t *dump = mmap(NULL, 0x4000, PROT_READ | PROT_WRITE, MAP_ANONYMOUS | MAP_PRIVATE, -1, 0);
@@ -144,7 +144,7 @@ int _main(struct thread *td) {
   printf_notification("Kernel dumped successfully!");
 
 #ifdef DEBUG_SOCKET
-  printf_socket("\nClosing socket...\n\n");
+  printf_debug("Closing socket...\n");
   SckClose(DEBUG_SOCK);
 #endif
 
