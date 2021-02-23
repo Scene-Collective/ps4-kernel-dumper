@@ -85,13 +85,9 @@ int _main(struct thread *td) {
 
   printf_notification("Running Kernel Dumper");
 
-  if (!wait_for_usb(usb_name, usb_path)) {
-    snprintf_s(notify_buf, sizeof(notify_buf), "Waiting for USB device...");
-    do {
-      sceKernelSleep(1);
-    } while (!wait_for_usb(usb_name, usb_path));
-    notify_buf[0] = '\0';
-  }
+  snprintf_s(notify_buf, sizeof(notify_buf), "Waiting for USB device...");
+  wait_for_usb(usb_name, usb_path);
+  notify_buf[0] = '\0';
 
   snprintf_s(output_root, sizeof(output_root), "%s/PS4", usb_path);
   mkdir(output_root, 0777);
