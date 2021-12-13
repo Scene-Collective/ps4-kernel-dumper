@@ -41,16 +41,27 @@ uint64_t get_kernel_size(uint64_t kernel_base) {
   printf_debug("elf_header_entry_size: %u bytes\n", elf_header_entry_size);
   printf_debug("num_of_elf_entries: %u\n", num_of_elf_entries);
 
-  uint64_t size = 0;
+  uint64_t max = 0;
   for (int i = 0; i < num_of_elf_entries; i++) {
-    uint64_t temp;
-    uint64_t offset = elf_header_size + (i * elf_header_entry_size) + 0x28;
-    get_memory_dump(kernel_base + offset, &temp, sizeof(uint64_t));
-    printf_debug("Segment #%i (Offset: 0x%X): %u bytes\n", i, offset, temp);
-    size += temp;
-  }
+    uint64_t temp_memsz;
+    uint64_t temp_vaddr;
+    uint64_t temp_align;
+    uint64_t temp_max;
 
-  return size;
+    uint64_t memsz_offset = elf_header_size + (i * elf_header_entry_size) + 0x28;
+    uint64_t vaddr_offset = elf_header_size + (i * elf_header_entry_size) + 0x10;
+    uint64_t align_offset = elf_header_size + (i * elf_header_entry_size) + 0x30;
+    get_memory_dump(kernel_base + memsz_offset, &temp_memsz, sizeof(uint64_t));
+    get_memory_dump(kernel_base + vaddr_offset , &temp_vaddr, sizeof(uint64_t));
+    get_memory_dump(kernel_base + align_offset, &temp_align, sizeof(uint64_t));
+
+    temp_max = (temp_vaddr + temp_memsz + (temp_align -1)) & ~(temp_align - 1);
+
+    if(temp_max > max) {
+      max = temp_max;
+    }
+  }
+  return max - kernel_base;
 }
 
 int _main(struct thread *td) {
