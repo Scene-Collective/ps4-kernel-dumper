@@ -52,16 +52,20 @@ uint64_t get_kernel_size(uint64_t kernel_base) {
     uint64_t vaddr_offset = elf_header_size + (i * elf_header_entry_size) + 0x10;
     uint64_t align_offset = elf_header_size + (i * elf_header_entry_size) + 0x30;
     get_memory_dump(kernel_base + memsz_offset, &temp_memsz, sizeof(uint64_t));
-    get_memory_dump(kernel_base + vaddr_offset , &temp_vaddr, sizeof(uint64_t));
+    get_memory_dump(kernel_base + vaddr_offset, &temp_vaddr, sizeof(uint64_t));
     get_memory_dump(kernel_base + align_offset, &temp_align, sizeof(uint64_t));
 
-    temp_max = (temp_vaddr + temp_memsz + (temp_align -1)) & ~(temp_align - 1);
+    temp_vaddr -= kernel_base;
+    temp_vaddr += 0xFFFFFFFF82200000;
 
-    if(temp_max > max) {
+    temp_max = (temp_vaddr + temp_memsz + (temp_align - 1)) & ~(temp_align - 1);
+
+    if (temp_max > max) {
       max = temp_max;
     }
   }
-  return max - kernel_base;
+
+  return max - 0xFFFFFFFF82200000;
 }
 
 int _main(struct thread *td) {
